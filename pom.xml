@@ -70,6 +70,7 @@
 
 		<lucene-core.version>5.2.1</lucene-core.version>
 		<commons-math3.version>3.5</commons-math3.version>
+		<github.global.server>github</github.global.server>
 		<commons-codec.version>1.10</commons-codec.version>
 		<commons-io.version>2.4</commons-io.version>
 		<jopensurf.version>1.0.0</jopensurf.version>
@@ -162,6 +163,31 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>${maven-source-plugin.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.11</version>
+				<configuration>
+					<message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
+					<noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
+					<outputDirectory>${project.build.directory}/maven-repo</outputDirectory> <!-- matches distribution management repository url above -->
+					<branch>refs/heads/lire</branch>       <!-- remote branch name -->
+					<includes><include>**/*</include></includes>
+					<repositoryName>maven-repo</repositoryName>      <!-- github repo name -->
+					<repositoryOwner>angleto</repositoryOwner>    <!-- github username  -->
+				</configuration>
+				<executions>
+					<!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+
 			</plugin>
 
 			<plugin>
