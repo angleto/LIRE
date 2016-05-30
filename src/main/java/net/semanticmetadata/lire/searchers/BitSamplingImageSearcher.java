@@ -48,8 +48,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.FieldInvertState;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.similarities.DefaultSimilarity;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -232,7 +233,7 @@ public class BitSamplingImageSearcher extends AbstractImageSearcher {
         // first search by text:
         IndexSearcher searcher = new IndexSearcher(reader);
         searcher.setSimilarity(new BaseSimilarity());
-        BooleanQuery query = new BooleanQuery();
+        BooleanQuery.Builder query = new BooleanQuery.Builder();
         for (int i = 0; i < hashes.length; i++) {
             // be aware that the hashFunctionsFileName of the field must match the one you put the hashes in before.
             if (partialHashes) {
@@ -241,7 +242,7 @@ public class BitSamplingImageSearcher extends AbstractImageSearcher {
             } else
                 query.add(new BooleanClause(new TermQuery(new Term(hashesFieldName, hashes[i] + "")), BooleanClause.Occur.SHOULD));
         }
-        TopDocs docs = searcher.search(query, maxResultsHashBased);
+        TopDocs docs = searcher.search(query.build(), maxResultsHashBased);
 //        System.out.println(docs.totalHits);
         // then re-rank
         TreeSet<SimpleResult> resultScoreDocs = new TreeSet<SimpleResult>();
@@ -274,7 +275,7 @@ public class BitSamplingImageSearcher extends AbstractImageSearcher {
         throw new UnsupportedOperationException("not implemented.");
     }
 
-    class BaseSimilarity extends DefaultSimilarity {
+    class BaseSimilarity extends ClassicSimilarity {
         public float tf(float freq) {
             return freq;
         }

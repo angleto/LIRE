@@ -77,7 +77,7 @@ public class LuceneUtils {
     /**
      * Currently employed version of Lucene
      */
-    public static final Version LUCENE_VERSION = Version.LUCENE_5_2_1;
+    public static final Version LUCENE_VERSION = Version.LUCENE_6_0_0;
 
     /**
      * Different types of analyzers
@@ -179,9 +179,6 @@ public class LuceneUtils {
         iw.close();
     }
 
-
-
-
     public static IndexReader openIndexReader(String indexPath) throws IOException {
         return openIndexReader(FSDirectory.open(Paths.get(indexPath)), false);
     }
@@ -201,14 +198,13 @@ public class LuceneUtils {
             return DirectoryReader.open(directory);
     }
 
-    public static IndexReader openIndexReader(IndexWriter writer, boolean applyDeletes) throws IOException {
-        return DirectoryReader.open(writer, applyDeletes);
+    public static IndexReader openIndexReader(IndexWriter writer, boolean applyAllDeletes, boolean writeAllDeletes) throws IOException {
+        return DirectoryReader.open(writer, applyAllDeletes, writeAllDeletes);
     }
 
     public static void closeReader(IndexReader reader) throws IOException {
         reader.close();
     }
-
 
     public static IndexSearcher openIndexSearcher(IndexReader reader){
         return new IndexSearcher(reader);
